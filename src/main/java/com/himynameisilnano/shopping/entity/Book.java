@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -24,8 +26,17 @@ public class Book {
     @NaturalId
     private String name;
 
-    public Book(String name) {
+    @ManyToOne
+    @JoinColumn(name = "ASD_ID")
+    private Author author;
+
+    public Book(String name, Author author) {
         this.name = name;
+        this.author = author;
+    }
+
+    public Book() {
+        // Do not remove. For JPA.
     }
 
     public Long getId() {
@@ -34,5 +45,9 @@ public class Book {
 
     public String getName() {
         return name;
+    }
+
+    public Author getAuthor() {
+        return author;
     }
 }

@@ -29,13 +29,18 @@ public class Author {
     @NotNull
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "AUTHOR_ID")
-    private List<Book> books;
+    //@OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
+    //@JoinColumn(name = "AUTHOR_ID")
+    //private List<Book> books;
 
     public Author() {
         // Do not remove. For Construction DI.
-        books = new ArrayList<>(0);
+        //books = new ArrayList<>(0);
+    }
+
+    public Author(String name) {
+        this();
+        this.name = name;
     }
 
     @NotNull
@@ -52,7 +57,7 @@ public class Author {
         this.name = name;
     }
 
-    public List<Book> getBooks() {
+    /*public List<Book> getBooks() {
         return books;
     }
 
@@ -70,7 +75,7 @@ public class Author {
 
     public void deleteAllBooks() {
         this.books = new ArrayList<>(0);
-    }
+    }*/
 
     @Override
     public String toString() {
