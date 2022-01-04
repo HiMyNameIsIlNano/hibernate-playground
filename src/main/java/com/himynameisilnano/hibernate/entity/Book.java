@@ -1,4 +1,4 @@
-package com.himynameisilnano.shopping.entity;
+package com.himynameisilnano.hibernate.entity;
 
 import org.hibernate.annotations.NaturalId;
 
@@ -7,14 +7,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "BOOK", indexes = {
-        @Index(name = "name_idx", columnList = "name")
+        @Index(name = "book_name_idx", columnList = "name")
 })
 public class Book {
 
@@ -26,13 +24,8 @@ public class Book {
     @NaturalId
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "ASD_ID")
-    private Author author;
-
-    public Book(String name, Author author) {
+    public Book(String name) {
         this.name = name;
-        this.author = author;
     }
 
     public Book() {
@@ -47,7 +40,4 @@ public class Book {
         return name;
     }
 
-    public Author getAuthor() {
-        return author;
-    }
 }

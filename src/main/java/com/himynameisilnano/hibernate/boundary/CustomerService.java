@@ -1,6 +1,6 @@
-package com.himynameisilnano.shopping.boundary;
+package com.himynameisilnano.hibernate.boundary;
 
-import com.himynameisilnano.shopping.entity.Author;
+import com.himynameisilnano.hibernate.entity.Author;
 
 import javax.persistence.EntityManager;
 import javax.validation.constraints.NotNull;
