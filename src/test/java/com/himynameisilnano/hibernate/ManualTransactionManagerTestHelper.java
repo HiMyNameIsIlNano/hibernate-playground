@@ -1,4 +1,4 @@
-package com.himynameisilnano.shopping;
+package com.himynameisilnano.hibernate;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

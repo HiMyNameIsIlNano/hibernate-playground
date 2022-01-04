@@ -1,4 +1,4 @@
-package com.himynameisilnano.shopping;
+package com.himynameisilnano.hibernate;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;

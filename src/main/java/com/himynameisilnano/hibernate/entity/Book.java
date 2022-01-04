@@ -1,4 +1,4 @@
-package com.himynameisilnano.shopping.entity;
+package com.himynameisilnano.hibernate.entity;
 
 import org.hibernate.annotations.NaturalId;
 
@@ -13,8 +13,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "BOOK", indexes = {
-        @Index(name = "name_idx", columnList = "name")
+@Table(name = "Book", indexes = {
+        @Index(name = "book_name_idx", columnList = "name")
 })
 public class Book {
 
@@ -27,16 +27,16 @@ public class Book {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "ASD_ID")
+    @JoinColumn(name = "ASD_ID") // This is not necessary, but it is nice to be able to define a decent name for the foreign key
     private Author author;
+
+    public Book() {
+        // Do not remove. For JPA.
+    }
 
     public Book(String name, Author author) {
         this.name = name;
         this.author = author;
-    }
-
-    public Book() {
-        // Do not remove. For JPA.
     }
 
     public Long getId() {

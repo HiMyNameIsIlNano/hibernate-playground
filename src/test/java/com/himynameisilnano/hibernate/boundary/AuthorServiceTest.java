@@ -1,8 +1,8 @@
-package com.himynameisilnano.shopping.boundary;
+package com.himynameisilnano.hibernate.boundary;
 
-import com.himynameisilnano.shopping.entity.Author;
-import com.himynameisilnano.shopping.JpaTransactionManagerTestSupplier;
-import com.himynameisilnano.shopping.entity.Book;
+import com.himynameisilnano.hibernate.JpaTransactionManagerTestSupplier;
+import com.himynameisilnano.hibernate.entity.Author;
+import com.himynameisilnano.hibernate.entity.Book;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +35,7 @@ class AuthorServiceTest {
 
             Author _author = new Author("Joe");
             Book nice_book = new Book("Nice book", _author);
-            //_author.addBook(nice_book);
+            _author.addBook(nice_book);
 
             testSubject.save(_author);
             entityManager.persist(nice_book);
@@ -44,7 +44,7 @@ class AuthorServiceTest {
 
         Assertions.assertNotNull(authorWithOneBook.getId());
         Assertions.assertEquals("Joe", authorWithOneBook.getName());
-        //Assertions.assertNotNull(authorWithOneBook.getBooks());
-        //Assertions.assertEquals(1L, authorWithOneBook.getBooks().size());
+        Assertions.assertNotNull(authorWithOneBook.getBooks());
+        Assertions.assertEquals(1L, authorWithOneBook.getBooks().size());
     }
 }
