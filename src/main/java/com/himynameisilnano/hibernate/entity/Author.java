@@ -26,6 +26,10 @@ public class Author {
     @NotNull
     private String name;
 
+    /**
+     * The join column will be created in the {@link Book} class.
+     * Mapped by is only necessary when the relationship is bidirectional.
+     */
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "ASD_ID")
     private List<Book> books;

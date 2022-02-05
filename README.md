@@ -6,7 +6,7 @@
 Author --- (1..*) ---> Book
 ```
 
-### Single-side mapping:
+### Unidirectional mapping:
 
 It is possible to map a `@OneToMany` association in two different ways. 
 
@@ -20,7 +20,8 @@ In this case the `Author` has a reference to the `Book`. In the `Author` class t
 private List<Book> books;
 ```
 
-The resulting model looks as follows:
+For unidirectional `@OneToMany` associations the join column will be created in the `Book` class and `mappedBy` is only necessary when the relationship is bidirectional.
+So the resulting model looks as follows:
 
 ```
 create table BOOK (id bigint not null, name varchar(255), ASD_ID bigint, primary key (id))
