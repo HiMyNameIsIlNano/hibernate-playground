@@ -1,16 +1,18 @@
-package com.himynameisilnano.hibernate.boundary;
+package com.himynameisilnano.hibernate.ssauthortobook.boundary;
 
-import com.himynameisilnano.hibernate.entity.Author;
+import com.himynameisilnano.hibernate.ssauthortobook.entity.Author;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
-public class CustomerService {
+@Transactional
+public class AuthorService {
 
     private final EntityManager entityManager;
 
-    public CustomerService(@NotNull EntityManager entityManager) {
+    public AuthorService(@NotNull EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 

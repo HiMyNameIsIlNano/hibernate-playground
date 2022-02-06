@@ -1,4 +1,4 @@
-package com.himynameisilnano.hibernate.entity;
+package com.himynameisilnano.hibernate.ssauthortobook.entity;
 
 import org.hibernate.annotations.NaturalId;
 
@@ -21,23 +21,28 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "BOOK_ID_GEN")
     private Long id;
 
-    @NaturalId
+    private String isbn;
+
     private String name;
 
-    public Book(String name) {
-        this.name = name;
+    protected Book() {
+        // Do not remove. For JPA.
     }
 
-    public Book() {
-        // Do not remove. For JPA.
+    public Book(String isbn, String name) {
+        this.isbn = isbn;
+        this.name = name;
     }
 
     public Long getId() {
         return id;
     }
 
+    public String getIsbn() {
+        return isbn;
+    }
+
     public String getName() {
         return name;
     }
-
 }

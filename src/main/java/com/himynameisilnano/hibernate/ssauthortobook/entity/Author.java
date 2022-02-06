@@ -1,4 +1,4 @@
-package com.himynameisilnano.hibernate.entity;
+package com.himynameisilnano.hibernate.ssauthortobook.entity;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,7 +10,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "AUTHOR")
@@ -31,12 +32,13 @@ public class Author {
      * Mapped by is only necessary when the relationship is bidirectional.
      */
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ASD_ID")
-    private List<Book> books;
+    @JoinColumn(name = "AUTHOR")
+    //private List<Book> books;
+    private Set<Book> books;
 
     public Author() {
         // Do not remove. For Construction DI.
-        books = new ArrayList<>(0);
+        books = new HashSet<>(0);
     }
 
     public Author(String name) {
@@ -58,7 +60,7 @@ public class Author {
         this.name = name;
     }
 
-    public List<Book> getBooks() {
+    public Set<Book> getBooks() {
         return books;
     }
 
@@ -66,7 +68,7 @@ public class Author {
         this.books.add(book);
     }
 
-    public void addBooks(List<Book> books) {
+    public void addBooks(Set<Book> books) {
         this.books.addAll(books);
     }
 
@@ -75,7 +77,7 @@ public class Author {
     }
 
     public void deleteAllBooks() {
-        this.books = new ArrayList<>(0);
+        this.books = new HashSet<>(0);
     }
 
     @Override
