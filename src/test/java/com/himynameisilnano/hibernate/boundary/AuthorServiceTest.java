@@ -16,8 +16,7 @@ class AuthorServiceTest {
         Author joe = doInJPA(supplier::getFactory, entityManager -> {
             CustomerService testSubject = new CustomerService(entityManager);
 
-            Author _author = new Author();
-            _author.setName("Joe");
+            Author _author = new Author("Joe");
             testSubject.save(_author);
 
             return _author;

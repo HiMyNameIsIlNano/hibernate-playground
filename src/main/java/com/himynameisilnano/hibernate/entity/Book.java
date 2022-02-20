@@ -30,7 +30,7 @@ public class Book {
     @JoinColumn(name = "ASD_ID") // This is not necessary, but it is nice to be able to define a decent name for the foreign key
     private Author author;
 
-    public Book() {
+    protected Book() {
         // Do not remove. For JPA.
     }
 

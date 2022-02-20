@@ -28,7 +28,7 @@ public class Author {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
     private List<Book> books;
 
-    public Author() {
+    protected Author() {
         // Do not remove. For Construction DI.
         books = new ArrayList<>(0);
     }
