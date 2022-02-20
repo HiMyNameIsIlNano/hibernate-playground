@@ -24,8 +24,8 @@ For unidirectional `@OneToMany` associations the join column will be created in 
 So the resulting model looks as follows:
 
 ```
-create table BOOK (id bigint not null, name varchar(255), ASD_ID bigint, primary key (id))
 create table AUTHOR (ID bigint not null, NAME varchar(255), primary key (ID))
+create table BOOK (id bigint not null, name varchar(255), ASD_ID bigint, primary key (id))
 create index name_idx on BOOK (name)
 ```
 

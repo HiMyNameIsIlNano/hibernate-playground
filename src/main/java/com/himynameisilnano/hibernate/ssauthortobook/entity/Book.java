@@ -1,7 +1,5 @@
 package com.himynameisilnano.hibernate.ssauthortobook.entity;
 
-import org.hibernate.annotations.NaturalId;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

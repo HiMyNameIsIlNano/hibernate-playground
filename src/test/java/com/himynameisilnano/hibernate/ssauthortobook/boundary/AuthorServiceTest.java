@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Set;
 
 import static org.hibernate.testing.transaction.TransactionUtil.doInJPA;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AuthorServiceTest {
 
@@ -20,8 +22,7 @@ class AuthorServiceTest {
         Author joe = doInJPA(supplier::getFactory, entityManager -> {
             AuthorService testSubject = new AuthorService(entityManager);
 
-            Author _author = new Author();
-            _author.setName("Joe");
+            Author _author = new Author("Joe");
             testSubject.save(_author);
 
             return _author;
