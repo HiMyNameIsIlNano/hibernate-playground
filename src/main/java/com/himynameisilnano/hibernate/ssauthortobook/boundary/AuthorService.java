@@ -4,30 +4,38 @@ import com.himynameisilnano.hibernate.ssauthortobook.entity.Author;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import javax.validation.constraints.NotNull;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Transactional
 public class AuthorService {
 
     private final EntityManager entityManager;
 
-    public AuthorService(@NotNull EntityManager entityManager) {
+    private static final Logger LOG = Logger.getLogger(AuthorService.class.toString());
+
+    public AuthorService(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
-    public Author save(@NotNull Author author) {
+    public Author save(Author author) {
         entityManager.persist(author);
         return author;
     }
 
-    public Author update(@NotNull Author author) {
-        entityManager.merge(author);
-        return author;
+    public Author update(Author author) {
+        return entityManager.merge(author);
     }
 
-    public Optional<Author> findCustomerById(int customerId) {
+    public Optional<Author> findAuthorById(long customerId) {
         Author Author = entityManager.find(Author.class, customerId);
         return Optional.ofNullable(Author);
+    }
+
+    public void saveNewCopy(Long id) {
+        Optional<Author> author = findAuthorById(id);
+        author.ifPresentOrElse(Author::getBooks, () -> {
+            throw new IllegalArgumentException(String.format("No Author with ID: %d found", id));
+        });
     }
 }

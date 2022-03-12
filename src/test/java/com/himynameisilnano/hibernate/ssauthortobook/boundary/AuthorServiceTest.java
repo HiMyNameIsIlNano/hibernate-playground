@@ -3,18 +3,20 @@ package com.himynameisilnano.hibernate.ssauthortobook.boundary;
 import com.himynameisilnano.hibernate.JpaTransactionManagerTestSupplier;
 import com.himynameisilnano.hibernate.ssauthortobook.entity.Author;
 import com.himynameisilnano.hibernate.ssauthortobook.entity.Book;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static org.hibernate.testing.transaction.TransactionUtil.doInJPA;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AuthorServiceTest {
+
+    private static final Logger LOG = Logger.getLogger(AuthorServiceTest.class.toString());
 
     @Test
     void save_author_shouldBeFoundInDb() {
@@ -22,7 +24,7 @@ class AuthorServiceTest {
         Author joe = doInJPA(supplier::getFactory, entityManager -> {
             AuthorService testSubject = new AuthorService(entityManager);
 
-            Author _author = new Author("Joe");
+            Author _author = Author.of("Joe");
             testSubject.save(_author);
 
             return _author;
@@ -38,9 +40,8 @@ class AuthorServiceTest {
         Author authorWithOneBook = doInJPA(supplier::getFactory, entityManager -> {
             AuthorService testSubject = new AuthorService(entityManager);
 
-            Author _author = new Author("Joe");
             Book nice_book = new Book("XYZ-123", "Nice book");
-            _author.addBook(nice_book);
+            Author _author = Author.of("Joe", nice_book);
 
             testSubject.save(_author);
             return _author;
@@ -53,83 +54,39 @@ class AuthorServiceTest {
     }
 
     @Test
-    @Disabled(value = "The author has a set of books and not a list. Change the collection type and reactivate this test")
-    void save_authorWithDuplicatedBook_shouldSaveBooksTwice() {
-        JpaTransactionManagerTestSupplier supplier = new JpaTransactionManagerTestSupplier("h2-dev");
-        Author authorWithThreeBooks = doInJPA(supplier::getFactory, entityManager -> {
+    void findById_author_shouldFindFooWithThreeBooks() {
+        JpaTransactionManagerTestSupplier supplier = new JpaTransactionManagerTestSupplier("h2-with-author");
+
+        doInJPA(supplier::getFactory, entityManager -> {
             AuthorService testSubject = new AuthorService(entityManager);
 
-            Author _author = new Author("Joe");
-            // The same book is now two instances
-            List<Book> threeBooksWithOneDuplicate = List.of(new Book("XYZ-123", "Nice book"),
-                    new Book("XYZ-456", "Awesome book"),
-                    new Book("XYZ-123", "Nice book"));
-            //_author.addBooks(threeBooksWithOneDuplicate);
-            _author.addBooks(Set.of());
+            Optional<Author> _optionalAuthor = testSubject.findAuthorById(-1);
 
-            testSubject.save(_author);
-            return _author;
+            Author author = _optionalAuthor.orElseThrow();
+            assertNotNull(author);
+
+            assertEquals("Foo", author.getName());
+            assertEquals(3, author.getBooks().size());
+            assertEquals(Set.of(new Book("XYZ-123", "A Book"),
+                    new Book("XYZ-456", "B Book"),
+                    new Book("XYZ-789", "C Book")), author.getBooks());
         });
-
-        assertNotNull(authorWithThreeBooks.getId());
-        assertEquals("Joe", authorWithThreeBooks.getName());
-        assertNotNull(authorWithThreeBooks.getBooks());
-        assertEquals(3L, authorWithThreeBooks.getBooks().size());
     }
 
     @Test
-    void of_authorWithDuplicatedBook_shouldThrowIllegalArgumentExceptionWhenBookDuplicated() {
-        assertThrows(IllegalArgumentException.class, () -> Set.of(new Book("XYZ-123", "Nice book"),
-                new Book("XYZ-456", "Awesome book"),
-                new Book("XYZ-123", "Nice book"))
-        );
-    }
+    void save_author_shouldNotTriggerSelectForBooks() {
+        JpaTransactionManagerTestSupplier supplier = new JpaTransactionManagerTestSupplier("h2-with-author");
 
-    @Test
-    void save_authorWithTwoBooks_shouldSaveBooksCorrectlyWhenCollectionIsSet() {
-        JpaTransactionManagerTestSupplier supplier = new JpaTransactionManagerTestSupplier("h2-dev");
-        Author authorWithThreeBooks = doInJPA(supplier::getFactory, entityManager -> {
+        doInJPA(supplier::getFactory, entityManager -> {
             AuthorService testSubject = new AuthorService(entityManager);
 
-            Author _author = new Author("Joe");
-            // It is not possible to build a set with duplicate values.
-            Set<Book> books = Set.of(
-                    new Book("XYZ-456", "Awesome book"),
-                    new Book("XYZ-123", "Nice book"));
-            _author.addBooks(books);
+            Optional<Author> _optionalAuthor = testSubject.findAuthorById(-1);
+            Author author = _optionalAuthor.orElseThrow();
+            assertNotNull(author);
 
-            testSubject.save(_author);
-            return _author;
+            //noinspection unused
+            //Author copyOfAuthor = Author.of(author);
+            Set<Long> collect = author.getBooks().stream().map(Book::getId).collect(Collectors.toSet());
         });
-
-        assertNotNull(authorWithThreeBooks.getId());
-        assertEquals("Joe", authorWithThreeBooks.getName());
-        assertNotNull(authorWithThreeBooks.getBooks());
-        assertEquals(2L, authorWithThreeBooks.getBooks().size());
-    }
-
-    @Test
-    void save_authorWithADuplicatedBook_shouldNotSaveDuplicatedBookTwice() {
-        JpaTransactionManagerTestSupplier supplier = new JpaTransactionManagerTestSupplier("h2-dev");
-        Author authorWithThreeBooks = doInJPA(supplier::getFactory, entityManager -> {
-            AuthorService testSubject = new AuthorService(entityManager);
-
-            Author _author = new Author("Joe");
-
-            Book awesomeBook = new Book("XYZ-456", "Awesome book");
-            Book niceBook = new Book("XYZ-123", "Nice book");
-            _author.addBook(awesomeBook);
-            _author.addBook(niceBook);
-            // This addBook here is skipped by the Java API as the element is already in the Set.
-            _author.addBook(niceBook);
-
-            testSubject.save(_author);
-            return _author;
-        });
-
-        assertNotNull(authorWithThreeBooks.getId());
-        assertEquals("Joe", authorWithThreeBooks.getName());
-        assertNotNull(authorWithThreeBooks.getBooks());
-        assertEquals(2L, authorWithThreeBooks.getBooks().size());
     }
 }

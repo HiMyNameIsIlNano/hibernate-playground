@@ -9,7 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -34,17 +33,36 @@ public class Author {
      */
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "AUTHOR")
-    //private List<Book> books;
     private Set<Book> books;
 
     protected Author() {
-        // Do not remove. For Construction DI.
-        books = new HashSet<>(0);
+        // Do not remove. For Jpa.
+        this(null, new HashSet<>(0));
     }
 
-    public Author(String name) {
-        this();
+    private Author(String name) {
+        this(name, new HashSet<>(0));
+    }
+
+    private Author(String name, Set<Book> books) {
         this.name = name;
+        this.books = books;
+    }
+
+    public static Author of(Author from) {
+        return new Author(from.getName(), from.getBooks());
+    }
+
+    public static Author of(String name, Book book) {
+        return Author.of(name, Set.of(book));
+    }
+
+    public static Author of(String name, Set<Book> books) {
+        return new Author(name, books);
+    }
+
+    public static Author of(String name) {
+        return new Author(name);
     }
 
     @NotNull
@@ -57,28 +75,8 @@ public class Author {
         return name;
     }
 
-    public void setName(@NotNull String name) {
-        this.name = name;
-    }
-
     public Set<Book> getBooks() {
-        return books;
-    }
-
-    public void addBook(Book book) {
-        this.books.add(book);
-    }
-
-    public void addBooks(Set<Book> books) {
-        this.books.addAll(books);
-    }
-
-    public void deleteBook(Book book) {
-        this.books.remove(book);
-    }
-
-    public void deleteAllBooks() {
-        this.books = new HashSet<>(0);
+        return new HashSet<>(books);
     }
 
     @Override
