@@ -17,24 +17,20 @@
     <!-- Log SQL statements -->
     <Logger name="org.hibernate.SQL" level="debug" additivity="false">
       <AppenderRef ref="Console" />
-      <AppenderRef ref="File" />
     </Logger>
 
     <!-- Log JDBC bind parameters -->
     <Logger name="org.hibernate.type.descriptor.sql" level="trace" additivity="false">
       <AppenderRef ref="Console" />
-      <AppenderRef ref="File" />
     </Logger>
 
     <!-- Log custom packages -->
     <Logger name="com.himynameisilnano.hibernate" level="debug" additivity="false">
       <AppenderRef ref="Console" />
-      <AppenderRef ref="File" />
     </Logger>
 
     <Root level="error">
       <AppenderRef ref="Console" />
-      <AppenderRef ref="File" />
     </Root>
   </Loggers>
 </Configuration>

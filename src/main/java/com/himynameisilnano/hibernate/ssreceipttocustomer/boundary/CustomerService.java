@@ -1,9 +1,9 @@
 package com.himynameisilnano.hibernate.ssreceipttocustomer.boundary;
 
 import com.himynameisilnano.hibernate.ssreceipttocustomer.entity.Customer;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.Optional;
 
