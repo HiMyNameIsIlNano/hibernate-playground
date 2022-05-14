@@ -33,7 +33,7 @@ public class Author {
      * Mapped by is only necessary when the relationship is bidirectional.
      */
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "AUTHOR")
+    @JoinColumn(name = "AUTHOR_ID")
     //private List<Book> books;
     private Set<Book> books;
 
