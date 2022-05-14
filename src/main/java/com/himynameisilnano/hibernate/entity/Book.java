@@ -1,19 +1,21 @@
 package com.himynameisilnano.hibernate.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.NaturalId;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import java.util.Objects;
+
 
 @Entity
-@Table(name = "Book", indexes = {
+@Table(name = "BOOK", indexes = {
         @Index(name = "book_name_idx", columnList = "name")
 })
 public class Book {
@@ -27,7 +29,7 @@ public class Book {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "ASD_ID") // This is not necessary, but it is nice to be able to define a decent name for the foreign key
+    @JoinColumn(name = "AUTHOR_ID") // This is not necessary, but it is nice to be able to define a decent name for the foreign key
     private Author author;
 
     protected Book() {
@@ -49,5 +51,18 @@ public class Book {
 
     public Author getAuthor() {
         return author;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return Objects.equals(id, book.id) && Objects.equals(name, book.name) && Objects.equals(author, book.author);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, author);
     }
 }

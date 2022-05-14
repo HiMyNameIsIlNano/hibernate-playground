@@ -1,8 +1,8 @@
 package com.himynameisilnano.hibernate.boundary;
 
 import com.himynameisilnano.hibernate.entity.Author;
+import jakarta.persistence.EntityManager;
 
-import javax.persistence.EntityManager;
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
 

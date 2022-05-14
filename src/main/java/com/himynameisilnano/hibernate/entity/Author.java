@@ -1,15 +1,17 @@
 package com.himynameisilnano.hibernate.entity;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "AUTHOR")
@@ -26,11 +28,11 @@ public class Author {
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
-    private List<Book> books;
+    private Set<Book> books;
 
     protected Author() {
         // Do not remove. For Construction DI.
-        books = new ArrayList<>(0);
+        books = new HashSet<>(0);
     }
 
     public Author(String name) {
@@ -52,7 +54,7 @@ public class Author {
         this.name = name;
     }
 
-    public List<Book> getBooks() {
+    public Set<Book> getBooks() {
         return books;
     }
 
@@ -69,7 +71,7 @@ public class Author {
     }
 
     public void deleteAllBooks() {
-        this.books = new ArrayList<>(0);
+        this.books = new HashSet<>(0);
     }
 
     @Override
