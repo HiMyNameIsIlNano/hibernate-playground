@@ -1,48 +1,19 @@
-# hibernate-playground
-
-## One-To-Many Associations
+# Immutable entities
 
 ```
 Author --- (1..*) ---> Book
 ```
 
-### Unidirectional mapping:
-
-It is possible to map a `@OneToMany` association in two different ways. 
-
-#### From the owning side to the owned side
-
-In this case the `Author` has a reference to the `Book`. In the `Author` class the association with the `Book` is specified this way:
+It does not seem to be possible to work with immutable objects in Hibernate. The pro of this approach would be that
+Hibernate does not manage the copy of the object once this is done and the logic to update or modify an object would
+reside
+in a single place like a `Builder` or a `copy` factory method, for example:
 
 ```java
-@OneToMany(cascade = CascadeType.ALL)
-@JoinColumn(name = "ASD_ID")
-private List<Book> books;
+public static Author of(Author from){
+    return new Author(from.getName(), from.getBooks());
+}
 ```
 
-For unidirectional `@OneToMany` associations the join column will be created in the `Book` class and `mappedBy` is only necessary when the relationship is bidirectional.
-So the resulting model looks as follows:
-
-```
-create table AUTHOR (ID bigint not null, NAME varchar(255), primary key (ID))
-create table BOOK (id bigint not null, name varchar(255), ASD_ID bigint, primary key (id))
-create index name_idx on BOOK (name)
-```
-
-#### Cons
-
-This way of mapping is not the best way to go about this kind of association. When the `@OneToMany` is in the main entity, hibernate triggers an update when saving the `Book`:
-
-```
-insert into AUTHOR (NAME, ID) values (?, ?)
-binding parameter [1] as [VARCHAR] - [Joe]
-binding parameter [2] as [BIGINT] - [1]
-
-insert into BOOK (name, id) values (?, ?)
-binding parameter [1] as [VARCHAR] - [Nice book]
-binding parameter [2] as [BIGINT] - [1]
-
-update BOOK set ASD_ID=? where id=?
-binding parameter [1] as [BIGINT] - [1]
-binding parameter [2] as [BIGINT] - [1]
-```
+but doing this will result in Hibernate triggering a select statement to retrieve all the `Book`s associated with the `Author` which 
+is absolutely not acceptable.

@@ -1,9 +1,9 @@
 package com.himynameisilnano.hibernate.ssauthortobook.boundary;
 
 import com.himynameisilnano.hibernate.ssauthortobook.entity.Author;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.logging.Logger;
 
