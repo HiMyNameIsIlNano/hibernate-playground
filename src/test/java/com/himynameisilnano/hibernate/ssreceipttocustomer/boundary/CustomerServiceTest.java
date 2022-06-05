@@ -1,9 +1,11 @@
 package com.himynameisilnano.hibernate.ssreceipttocustomer.boundary;
 
+import com.himynameisilnano.hibernate.JdkLoggingConfigReaderHelper;
 import com.himynameisilnano.hibernate.JpaTransactionManagerTestSupplier;
 import com.himynameisilnano.hibernate.ssreceipttocustomer.entity.Customer;
 import com.himynameisilnano.hibernate.ssreceipttocustomer.entity.Receipt;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
 import java.util.UUID;
@@ -12,6 +14,7 @@ import static org.hibernate.testing.transaction.TransactionUtil.doInJPA;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@ExtendWith(JdkLoggingConfigReaderHelper.class)
 class CustomerServiceTest {
 
     @Test

@@ -1,10 +1,12 @@
 package com.himynameisilnano.hibernate.ssauthortobook.boundary;
 
+import com.himynameisilnano.hibernate.JdkLoggingConfigReaderHelper;
 import com.himynameisilnano.hibernate.JpaTransactionManagerTestSupplier;
 import com.himynameisilnano.hibernate.ssauthortobook.entity.Author;
 import com.himynameisilnano.hibernate.ssauthortobook.entity.Book;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
 import java.util.Set;
@@ -14,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ExtendWith(JdkLoggingConfigReaderHelper.class)
 class AuthorServiceTest {
 
     @Test
