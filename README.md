@@ -24,26 +24,32 @@ private Author author;
 This is the resulting model:
 
 ```
-022-May-14 14:42:53 pm [main] DEBUG org.hibernate.SQL - create sequence BOOK_ID_GEN start with 1 increment by 50
+DEBUG: create sequence AUTHOR_SEQ start with 1 increment by 50
+DEBUG: create sequence BOOK_ID_GEN start with 1 increment by 50
 
-2022-May-14 14:42:53 pm [main] DEBUG org.hibernate.SQL - create table AUTHOR (ID bigint not null, NAME varchar(255), primary key (ID))
-2022-May-14 14:42:53 pm [main] DEBUG org.hibernate.SQL - create table BOOK (id bigint not null, name varchar(255), AUTHOR_ID bigint, primary key (id))
+DEBUG: create table AUTHOR (ID bigint not null, NAME varchar(255), primary key (ID))
+DEBUG: create table BOOK (id bigint not null, name varchar(255), AUTHOR_ID bigint, primary key (id))
 
-2022-May-14 14:42:53 pm [main] DEBUG org.hibernate.SQL - create index book_name_idx on BOOK (name)
+DEBUG: create index book_name_idx on BOOK (name)
 
-2022-May-14 14:42:53 pm [main] DEBUG org.hibernate.SQL - alter table if exists BOOK add constraint UK_kkd7aa41jutasor701u64yvs8 unique (name)
-2022-May-14 14:42:53 pm [main] DEBUG org.hibernate.SQL - alter table if exists BOOK add constraint FKbj8bip3gmii2iwakx86il4939 foreign key (AUTHOR_ID) references AUTHOR
+DEBUG: alter table if exists BOOK add constraint UK_kkd7aa41jutasor701u64yvs8 unique (name)
+DEBUG: alter table if exists BOOK add constraint FKbj8bip3gmii2iwakx86il4939 foreign key (AUTHOR_ID) references AUTHOR
 ```
 
 Inserting an `Author` with a `Book` into the DB produces the following statements:
 
 ```
-2022-May-14 14:42:53 pm [main] DEBUG org.hibernate.SQL - select next value for AUTHOR_SEQ
-2022-May-14 14:42:53 pm [main] DEBUG org.hibernate.SQL - select next value for BOOK_ID_GEN
+DEBUG: select next value for AUTHOR_SEQ
+DEBUG: select next value for BOOK_ID_GEN
 
-2022-May-14 14:42:53 pm [main] DEBUG org.hibernate.SQL - insert into AUTHOR (NAME, ID) values (?, ?)
-2022-May-14 14:42:53 pm [main] DEBUG org.hibernate.SQL - insert into BOOK (AUTHOR_ID, name, id) values (?, ?, ?)
+DEBUG: insert into AUTHOR (NAME, ID) values (?, ?)
+TRACE: binding parameter [1] as [VARCHAR] - [Joe]
+TRACE: binding parameter [2] as [BIGINT] - [1]
+
+DEBUG: insert into BOOK (AUTHOR_ID, name, id) values (?, ?, ?)
+TRACE: binding parameter [1] as [BIGINT] - [1]
+TRACE: binding parameter [2] as [VARCHAR] - [Nice book]
+TRACE: binding parameter [3] as [BIGINT] - [1]
 ```
 
 ## TODO
-- [ ] Fix missing parameters in logs

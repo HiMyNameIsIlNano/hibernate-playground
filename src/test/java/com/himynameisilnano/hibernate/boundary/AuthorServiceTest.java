@@ -1,13 +1,16 @@
 package com.himynameisilnano.hibernate.boundary;
 
+import com.himynameisilnano.hibernate.JdkLoggingConfigReaderHelper;
 import com.himynameisilnano.hibernate.JpaTransactionManagerTestSupplier;
 import com.himynameisilnano.hibernate.entity.Author;
 import com.himynameisilnano.hibernate.entity.Book;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.hibernate.testing.transaction.TransactionUtil.doInJPA;
 
+@ExtendWith(JdkLoggingConfigReaderHelper.class)
 class AuthorServiceTest {
 
     @Test
