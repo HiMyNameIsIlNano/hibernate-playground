@@ -3,8 +3,8 @@ package com.himynameisilnano.hibernate.ssreceipttocustomer.boundary;
 import com.himynameisilnano.hibernate.ssreceipttocustomer.entity.Customer;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
-import javax.validation.Valid;
 import java.util.Optional;
 
 @Transactional
@@ -12,7 +12,7 @@ class CustomerService {
 
     private final EntityManager entityManager;
 
-    CustomerService(@Valid EntityManager entityManager) {
+    CustomerService(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
