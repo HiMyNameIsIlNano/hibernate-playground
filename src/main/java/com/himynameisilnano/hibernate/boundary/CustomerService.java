@@ -2,8 +2,8 @@ package com.himynameisilnano.hibernate.boundary;
 
 import com.himynameisilnano.hibernate.entity.Author;
 import jakarta.persistence.EntityManager;
+import jakarta.validation.constraints.NotNull;
 
-import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 public class CustomerService {
