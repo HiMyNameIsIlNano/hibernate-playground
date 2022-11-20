@@ -55,7 +55,10 @@ public class Author {
     }
 
     public static Author of(String name, Book book) {
-        return Author.of(name, () -> Set.of(book));
+        Author author = Author.of(name);
+        author.books = Set.of(book);
+
+        return author;
     }
 
     public static Author of(String name, Supplier<Set<Book>> books) {
