@@ -3,6 +3,7 @@ package com.himynameisilnano.hibernate.ssauthortobook.boundary;
 import com.himynameisilnano.hibernate.ssauthortobook.entity.Author;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -18,12 +19,12 @@ public class AuthorService {
         this.entityManager = entityManager;
     }
 
-    public Author save(Author author) {
+    public Author save(@Valid Author author) {
         entityManager.persist(author);
         return author;
     }
 
-    public Author update(Author author) {
+    public Author update(@Valid Author author) {
         return entityManager.merge(author);
     }
 

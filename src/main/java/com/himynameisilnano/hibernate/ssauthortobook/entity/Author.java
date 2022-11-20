@@ -8,11 +8,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotNull;
 
-import javax.validation.constraints.NotNull;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Supplier;
 
 @Entity
 @Table(name = "AUTHOR")
@@ -36,34 +37,33 @@ public class Author {
     @JoinColumn(name = "AUTHOR")
     private Set<Book> books;
 
+    @Transient
+    private Supplier<Set<Book>> lazy = () -> this.books;
+
     protected Author() {
         // Do not remove. For Jpa.
-        this(null, new HashSet<>(0));
+        new Author(null, () -> this.books);
     }
 
-    private Author(String name) {
-        this(name, new HashSet<>(0));
-    }
-
-    private Author(String name, Set<Book> books) {
+    private Author(String name, Supplier<Set<Book>> lazy) {
         this.name = name;
-        this.books = books;
+        this.lazy = lazy;
     }
 
     public static Author of(Author from) {
-        return new Author(from.getName(), from.getBooks());
+        return new Author(from.getName(), from::getBooks);
     }
 
     public static Author of(String name, Book book) {
-        return Author.of(name, Set.of(book));
+        return Author.of(name, () -> Set.of(book));
     }
 
-    public static Author of(String name, Set<Book> books) {
+    public static Author of(String name, Supplier<Set<Book>> books) {
         return new Author(name, books);
     }
 
     public static Author of(String name) {
-        return new Author(name);
+        return new Author(name, Set::of);
     }
 
     @NotNull
@@ -77,7 +77,8 @@ public class Author {
     }
 
     public Set<Book> getBooks() {
-        return new HashSet<>(books);
+        books = lazy.get();
+        return books;
     }
 
     @Override

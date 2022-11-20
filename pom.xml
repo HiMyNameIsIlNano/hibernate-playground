@@ -12,11 +12,12 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <hibernate.version>6.1.1.Final</hibernate.version>
+        <hibernate.version>6.1.5.Final</hibernate.version>
         <jakarta.validation-api.version>3.0.2</jakarta.validation-api.version>
         <jakarta-validator.impl.version>7.0.4.Final</jakarta-validator.impl.version>
         <jakarta.el-api.version>4.0.0</jakarta.el-api.version>
         <jakarta.el.impl.version>4.0.2</jakarta.el.impl.version>
+        <junit-jupiter.version>5.9.0</junit-jupiter.version>
     </properties>
 
     <build>
@@ -83,7 +84,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.8.2</version>
+            <version>${junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
