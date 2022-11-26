@@ -45,8 +45,7 @@ class AuthorServiceTest {
             Book nice_book = new Book("XYZ-123", "Nice book");
             Author _author = Author.of("Joe", nice_book);
 
-            testSubject.save(_author);
-            return _author;
+            return testSubject.save(_author);
         });
 
         assertNotNull(authorWithOneBook.getId());

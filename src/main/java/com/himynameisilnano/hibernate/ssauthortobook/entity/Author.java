@@ -14,10 +14,13 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 @Entity
 @Table(name = "AUTHOR")
 public class Author {
+
+    private static final Logger LOG = Logger.getLogger(Author.class.toString());
 
     @Id
     @GeneratedValue
@@ -38,16 +41,16 @@ public class Author {
     private Set<Book> books;
 
     @Transient
-    private Supplier<Set<Book>> lazy = () -> this.books;
+    private Supplier<Set<Book>> lazyLoadBooks = () -> this.books;
 
     protected Author() {
         // Do not remove. For Jpa.
         new Author(null, () -> this.books);
     }
 
-    private Author(String name, Supplier<Set<Book>> lazy) {
+    private Author(String name, Supplier<Set<Book>> lazyLoadBooks) {
         this.name = name;
-        this.lazy = lazy;
+        this.lazyLoadBooks = lazyLoadBooks;
     }
 
     public static Author of(Author from) {
@@ -55,14 +58,7 @@ public class Author {
     }
 
     public static Author of(String name, Book book) {
-        Author author = Author.of(name);
-        author.books = Set.of(book);
-
-        return author;
-    }
-
-    public static Author of(String name, Supplier<Set<Book>> books) {
-        return new Author(name, books);
+        return new Author(name, () -> Set.of(book));
     }
 
     public static Author of(String name) {
@@ -80,7 +76,7 @@ public class Author {
     }
 
     public Set<Book> getBooks() {
-        books = lazy.get();
+        books = lazyLoadBooks.get();
         return books;
     }
 
