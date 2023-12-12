@@ -12,11 +12,13 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <hibernate.version>6.1.1.Final</hibernate.version>
+        <hibernate.version>6.4.0.Final</hibernate.version>
         <jakarta.validation-api.version>3.0.2</jakarta.validation-api.version>
-        <jakarta-validator.impl.version>7.0.4.Final</jakarta-validator.impl.version>
-        <jakarta.el-api.version>4.0.0</jakarta.el-api.version>
+        <jakarta-validator.impl.version>8.0.0.Final</jakarta-validator.impl.version>
+        <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
         <jakarta.el.impl.version>4.0.2</jakarta.el.impl.version>
+        <junit-jupiter.version>5.9.2</junit-jupiter.version>
+        <h2.version>2.2.224</h2.version>
     </properties>
 
     <build>
@@ -25,10 +27,10 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>3.11.0</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -43,7 +45,8 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>2.1.212</version>
+            <version>${h2.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -83,7 +86,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.8.2</version>
+            <version>${junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
