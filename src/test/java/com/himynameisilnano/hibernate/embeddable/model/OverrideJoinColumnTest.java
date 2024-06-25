@@ -2,7 +2,6 @@ package com.himynameisilnano.hibernate.embeddable.model;
 
 import com.himynameisilnano.hibernate.JdkLoggingConfigReaderHelper;
 import com.himynameisilnano.hibernate.JpaTransactionManagerTestSupplier;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -16,9 +15,9 @@ class OverrideJoinColumnTest {
     void can_Override_Join_Column() {
         JpaTransactionManagerTestSupplier supplier = new JpaTransactionManagerTestSupplier("h2-dev");
         doInJPA(supplier::getFactory, entityManager -> {
-            TLeftEntityToRightEntity tLeftEntityToRightEntity = new TLeftEntityToRightEntity();
+            EntityWithGenericEmbeddedId entityWithGenericEmbeddedId = new EntityWithGenericEmbeddedId();
 
-            assertThat(tLeftEntityToRightEntity).isNotNull();
+            assertThat(entityWithGenericEmbeddedId).isNotNull();
         });
     }
 }
