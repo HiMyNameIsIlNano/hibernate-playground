@@ -8,7 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
 
 import java.util.Collection;
 
@@ -25,6 +24,6 @@ public class ReferencedEntity {
     private Long id;
 
     @OneToMany(mappedBy = "id.referencedEntity", cascade = CascadeType.ALL)
-    private Collection<EntityWithGenericEmbeddedId> entities;
+    private Collection<MainEntity> entities;
 
 }
