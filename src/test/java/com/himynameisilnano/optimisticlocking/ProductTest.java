@@ -2,21 +2,18 @@ package com.himynameisilnano.optimisticlocking;
 
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.OptimisticLockException;
+import jakarta.persistence.RollbackException;
 import org.assertj.core.api.Assertions;
 import org.hibernate.testing.transaction.TransactionUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.logging.Logger;
-
 import static com.himynameisilnano.EntityManagerTestUtils.forPersistenceUnitWithProperties;
 import static com.himynameisilnano.PersistenceUnitPropertiesHelper.createDb;
 import static com.himynameisilnano.PersistenceUnitPropertiesHelper.keepDb;
 
 class ProductTest {
-
-    private static final Logger LOGGER = Logger.getLogger(ProductTest.class.getName());
 
     @BeforeEach
     void setUp() {
@@ -51,7 +48,7 @@ class ProductTest {
     @Nested
     class MultipleUser {
         @Test
-        void two_users_cannot_save_same_product() {
+        void two_users_cannot_save_same_product_at_the_same_time() {
             // User 1 is retrieving the product
             var productUser1 = TransactionUtil.doInJPA(() -> forPersistenceUnitWithProperties("h2-dev", keepDb("db-with-product")), entityManager -> {
                 return entityManager.find(Product.class, 1L, LockModeType.OPTIMISTIC);
@@ -89,6 +86,35 @@ class ProductTest {
         }
 
         @Test
+        void user_1_saves_product_then_user_2_saves_product() {
+            // User 1 is retrieving and updating the product
+            TransactionUtil.doInJPA(() -> forPersistenceUnitWithProperties("h2-dev", keepDb("db-with-product")), entityManager -> {
+                var product = entityManager.find(Product.class, 1L, LockModeType.OPTIMISTIC);
+
+                Assertions.assertThat(product.getVersion()).isZero();
+
+                product.setDescription("The best product in the world (User 1)!");
+            });
+
+            // User 2 retrieves the same product as User 1 and updates its description
+            TransactionUtil.doInJPA(() -> forPersistenceUnitWithProperties("h2-dev", keepDb("db-with-product")), entityManager -> {
+                var product = entityManager.find(Product.class, 1L, LockModeType.OPTIMISTIC);
+
+                Assertions.assertThat(product.getVersion()).isEqualTo(1L);
+                Assertions.assertThat(product.getDescription()).isEqualTo("The best product in the world (User 1)!");
+
+                product.setDescription("The best product in the world (User 2)!");
+            });
+
+            TransactionUtil.doInJPA(() -> forPersistenceUnitWithProperties("h2-dev", keepDb("db-with-product")), entityManager -> {
+                var productFromDb = entityManager.find(Product.class, 1L, LockModeType.OPTIMISTIC);
+
+                Assertions.assertThat(productFromDb.getVersion()).isEqualTo(2L);
+                Assertions.assertThat(productFromDb.getDescription()).isEqualTo("The best product in the world (User 2)!");
+            });
+        }
+
+        @Test
         void optimistic_lock_does_not_increment_version() {
             // User 1 is retrieving the product
             var productUser1 = TransactionUtil.doInJPA(() -> forPersistenceUnitWithProperties("h2-dev", keepDb("db-with-product")), entityManager -> {
@@ -107,21 +133,55 @@ class ProductTest {
         }
 
         @Test
-        void optimistic_force_increment_lock_always_increments_version() {
+        void optimistic_force_increment_lock_increments_version_when_transaction_is_committed() {
             // User 1 is retrieving the product
-            var productUser1 = TransactionUtil.doInJPA(() -> forPersistenceUnitWithProperties("h2-dev", keepDb("db-with-product")), entityManager -> {
-                // OPTIMISTIC_FORCE_INCREMENT always increments the version
-                return entityManager.find(Product.class, 1L, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+            var productTransaction1 = TransactionUtil.doInJPA(() -> forPersistenceUnitWithProperties("h2-dev", keepDb("db-with-product")), entityManager -> {
+                // OPTIMISTIC_FORCE_INCREMENT always increments the version when the transaction is committed
+                Product product = entityManager.find(Product.class, 1L, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+
+                Assertions.assertThat(product.getVersion()).isZero();
+
+                return product;
             });
 
-            // User 1 is retrieving the product
-            var productUser2 = TransactionUtil.doInJPA(() -> forPersistenceUnitWithProperties("h2-dev", keepDb("db-with-product")), entityManager -> {
-                // OPTIMISTIC_FORCE_INCREMENT always increments the version
-                return entityManager.find(Product.class, 1L, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+            // User 2 is retrieving the product
+            var productTransaction2 = TransactionUtil.doInJPA(() -> forPersistenceUnitWithProperties("h2-dev", keepDb("db-with-product")), entityManager -> {
+                // OPTIMISTIC_FORCE_INCREMENT increments the version when the transaction is committed
+                Product product = entityManager.find(Product.class, 1L, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+
+                // The version has been incremented at the end of the previous _doInJpa_ block
+                Assertions.assertThat(product.getVersion()).isEqualTo(1L);
+
+                return product;
             });
 
-            Assertions.assertThat(productUser1.getVersion()).isEqualTo(1L);
-            Assertions.assertThat(productUser2.getVersion()).isEqualTo(2L);
+            Assertions.assertThat(productTransaction1.getVersion()).isEqualTo(1L);
+            Assertions.assertThat(productTransaction2.getVersion()).isEqualTo(2L);
+        }
+
+        @Test
+        void slow_user_cannot_save_product_as_his_version_is_stale() {
+            // User 1 is retrieving the product
+            Assertions.assertThatThrownBy(() -> TransactionUtil.doInJPA(() -> forPersistenceUnitWithProperties("h2-dev", keepDb("db-with-product")), entityManagerT1 -> {
+                Product productT1 = entityManagerT1.find(Product.class, 1L, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+
+                Assertions.assertThat(productT1.getVersion()).isZero();
+
+                // User 2 is retrieving the product
+                var productTransaction2 = TransactionUtil.doInJPA(() -> forPersistenceUnitWithProperties("h2-dev", keepDb("db-with-product")), entityManagerT2 -> {
+                    Product productT2 = entityManagerT2.find(Product.class, 1L, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+
+                    // The version has not been incremented yet as the previous transaction has not been committed
+                    Assertions.assertThat(productT2.getVersion()).isZero();
+
+                    return productT2;
+                });
+
+                Assertions.assertThat(productTransaction2.getVersion()).isEqualTo(1L);
+                return productT1;
+
+                // Transaction 1 is committed when returning from this block
+            })).isInstanceOf(RollbackException.class);
         }
     }
 
