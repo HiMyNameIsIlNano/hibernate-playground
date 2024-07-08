@@ -67,18 +67,6 @@
             <artifactId>hibernate-validator</artifactId>
         </dependency>
 
-        <!--&lt;!&ndash; Jakarta Expression Language &ndash;&gt;
-        &lt;!&ndash; Interface &ndash;&gt;
-        <dependency>
-            <groupId>jakarta.el</groupId>
-            <artifactId>jakarta.el-api</artifactId>
-        </dependency>
-        &lt;!&ndash; As this project's JAR does not run into a container I need to add an implementation &ndash;&gt;
-        <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>jakarta.el</artifactId>
-        </dependency>-->
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
